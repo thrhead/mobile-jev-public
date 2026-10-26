@@ -7,8 +7,8 @@ This repository is the **private staging area** for a future sanitized public-fa
 - Visibility: **private staging**
 - Production readiness: **not established**
 - Public release readiness: **not established**
-- SDK binary redistribution: **not yet approved**
 - LDM public source/sample license: **Apache-2.0**
+- Frozen SDK binary publication: **blocked**
 
 This repository was created with fresh Git history. It does **not** import the private authoritative repository history, frozen model/PTE bundles, golden fixtures, internal validation evidence, signing material, or historical release artifacts.
 
@@ -32,7 +32,7 @@ This license decision does **not** by itself license or authorize publication of
 - [`docs/public-contract.md`](docs/public-contract.md) — public ownership boundary, canonical candidates, semantic fields, and outcome handling.
 - [`docs/integration-guide.md`](docs/integration-guide.md) — Android public API integration pattern.
 - [`docs/android-quickstart.md`](docs/android-quickstart.md) — private-staging build instructions.
-- [`docs/distribution.md`](docs/distribution.md) — current SDK redistribution gate and explicit blockers.
+- [`docs/distribution.md`](docs/distribution.md) — exact frozen SDK inspection result and current publication block.
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — provisional third-party notice inventory; not publication clearance.
 
 ## SDK distribution
@@ -43,9 +43,9 @@ The Android public API coordinate is documented as:
 com.ldm:ldm-runtime-android:1.0.0-alpha1
 ```
 
-No public SDK binary distribution is provided by this staging repository yet. The sample Gradle configuration requires an explicitly approved Maven repository URI and fails intentionally when one is not supplied.
+The exact frozen SDK bundle was inspected and matched its immutable SHA256 identity. Its runtime AAR embeds the private frozen model/PTE resources and protocol lock, so the frozen bundle is **not eligible for public export as-is** under the approved boundary. The exact bundle/AARs also do not carry complete license/notice material for a future public binary distribution.
 
-Do not publish the SDK ZIP/AARs or a public Maven repository until redistribution-rights and third-party-notice gates are established from exact binary evidence. The required evidence artifact is the immutable private Release asset `LDM_Android_SDK_MavenBundle_1.0.0-alpha1.zip` with SHA256 `08adf8ced4fab0de66ac39f6f6a90543569305954bedf40621bf21409e4d2d80`.
+No public SDK binary distribution is provided by this staging repository. The sample Gradle configuration remains intentionally distribution-gated.
 
 ## Authoritative source provenance
 
@@ -61,6 +61,6 @@ Do not add:
 - golden fixtures or internal conformance/parity harnesses;
 - credentials, `.env` secrets, keystores, signing keys, or signing passwords;
 - private validation evidence or private workflow history;
-- SDK binaries until redistribution and third-party notice gates are explicitly established.
+- the current frozen SDK ZIP/AARs.
 
 Repository visibility must remain private until every pre-publication gate is explicitly reviewed.
