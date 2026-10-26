@@ -45,7 +45,7 @@ com.ldm:ldm-runtime-android:1.0.0-alpha1
 
 No public SDK binary distribution is provided by this staging repository yet. The sample Gradle configuration requires an explicitly approved Maven repository URI and fails intentionally when one is not supplied.
 
-Do not publish the SDK ZIP/AARs or a public Maven repository until redistribution-rights and third-party-notice gates are established from exact binary evidence.
+Do not publish the SDK ZIP/AARs or a public Maven repository until redistribution-rights and third-party-notice gates are established from exact binary evidence. The required evidence artifact is the immutable private Release asset `LDM_Android_SDK_MavenBundle_1.0.0-alpha1.zip` with SHA256 `08adf8ced4fab0de66ac39f6f6a90543569305954bedf40621bf21409e4d2d80`.
 
 ## Authoritative source provenance
 
