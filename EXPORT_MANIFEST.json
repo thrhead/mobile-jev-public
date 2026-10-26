@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.5",
+  "manifest_version": "1.6",
   "purpose": "LDM sanitized public source/sample/docs export provenance",
   "authoritative_source_repository": "thrhead/mobile_jev",
   "source_sha": "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54",
@@ -26,7 +26,8 @@
     "PUBLIC_REPO_BUILD": "NOT_APPLICABLE_REFERENCE_SOURCE_ONLY_SURFACE",
     "PUBLIC_SDK_BINARY_PUBLICATION": "BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED",
     "PUBLIC_SDK_REDISTRIBUTION_RIGHTS": "NOT_ESTABLISHED",
-    "PUBLIC_SDK_THIRD_PARTY_NOTICE_COMPLIANCE": "NOT_ESTABLISHED_REPACK_REQUIRED"
+    "PUBLIC_SDK_THIRD_PARTY_NOTICE_COMPLIANCE": "NOT_ESTABLISHED_REPACK_REQUIRED",
+    "REQUIRED_BRANCH_PROTECTION": "NOT_ESTABLISHED"
   },
-  "visibility_recommendation": "READY_FOR_PUBLIC_SOURCE_ONLY_AFTER_GREEN_MERGE"
+  "visibility_recommendation": "READY_FOR_PUBLIC_SOURCE_ONLY"
 }
