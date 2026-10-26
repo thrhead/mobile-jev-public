@@ -1,16 +1,17 @@
 # LDM Android Integration Guide
 
-This guide is for application developers integrating through the LDM public API surface. It intentionally excludes model/PTE access, runtime-internal encoding, conformance APIs, private validation infrastructure, and signing/release evidence.
+This guide is for application developers reading the LDM public API integration surface. It intentionally excludes model/PTE access, runtime-internal encoding, conformance APIs, private validation infrastructure, signing/release evidence, and public SDK binary distribution.
 
-## Current staging status
+## Current public repository scope
 
 - Public contract: `1.0`
-- Android runtime coordinate: `com.ldm:ldm-runtime-android:1.0.0-alpha1`
+- Android runtime coordinate exercised by the reference samples: `com.ldm:ldm-runtime-android:1.0.0-alpha1`
 - Minimum Android API exercised by the sample configuration: API 26
 - Java toolchain: 17
-- Public frozen SDK binary distribution: **blocked**
+- Repository publication model: **source + reference samples + documentation only**
+- Public SDK binary distribution: **not provided by this repository**
 
-The exact frozen SDK bundle was inspected and its runtime AAR embeds private model/PTE resources. Therefore the current frozen bundle is not a public distributable artifact under the approved export boundary. See `distribution.md`.
+The coordinate is documented for API compatibility and source readability. This repository does not publish or provide a public Maven repository for the binary. See `distribution.md`.
 
 ## Application architecture
 
@@ -34,9 +35,9 @@ Application side effect or application fallback
 
 The application owns real side effects and fallback behavior. The runtime owns inference, encoding, masking, calibration, OOD handling, abstention, and LDM candidate selection.
 
-## Runtime setup
+## Runtime setup pattern
 
-The sanitized samples exercise the public runtime through `LdmRuntime` and `LdmPublicAdapter` when an approved private-staging SDK repository is supplied:
+The sanitized reference samples show the public runtime pattern through `LdmRuntime` and `LdmPublicAdapter`:
 
 ```kotlin
 val runtime = LdmRuntime(context.applicationContext)
@@ -50,9 +51,11 @@ Close the runtime when the owning component is destroyed:
 runtime.close()
 ```
 
-## Build dependency
+These snippets document the integration contract. They do not imply that the runtime binary is publicly distributed from this repository.
 
-The application dependency identity exercised by the samples is:
+## Dependency coordinate
+
+The reference samples declare:
 
 ```kotlin
 dependencies {
@@ -60,9 +63,7 @@ dependencies {
 }
 ```
 
-This coordinate documents compatibility identity; it is **not** a promise that the current frozen binary will be published publicly.
-
-During private staging, the sample settings require an explicitly supplied approved Maven repository URI:
+The sample settings require an explicitly supplied, separately authorized Maven repository URI:
 
 ```text
 -PldmSdkRepository=<uri>
@@ -74,7 +75,7 @@ or:
 LDM_SDK_REPOSITORY=<uri>
 ```
 
-The build fails intentionally when neither is supplied. This prevents the staging repository from silently depending on the authoritative private repository or private Release assets.
+The configuration fails intentionally when neither is supplied. This prevents the public source repository from silently depending on the authoritative private repository or private Release assets.
 
 ## Request construction
 
@@ -147,9 +148,9 @@ Do not:
 - substitute another candidate after a valid LDM DECISION;
 - treat application fallback as an LDM decision.
 
-## Samples
+## Reference samples
 
 - `samples/task-priority-android/` — local Task Inbox with Room persistence and application fallback provenance.
-- `samples/notification-timing-android/` — Android notification timing sample with real `show_now`, delayed-alarm, and silent application actions.
+- `samples/notification-timing-android/` — Android notification timing reference with `show_now`, delayed-alarm, and silent application actions.
 
-These samples are staging exports of application-side code only. They do not contain the private model bundle or internal validation history.
+These samples are source exports of application-side code only. They do not contain the private model bundle, SDK binaries, or internal validation history.
