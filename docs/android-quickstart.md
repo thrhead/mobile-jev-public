@@ -1,21 +1,50 @@
-# Android Sample Quickstart — Private Staging
+# Android Reference Samples
 
-The Android samples in this repository contain sanitized application-side source and public-safe Gradle shells. They do **not** bundle the private LDM SDK, model/PTE resources, signing material, or private CI artifacts.
+The Android samples in this repository are sanitized **application-side reference integrations**. They do **not** bundle or publish the private LDM SDK, frozen model/PTE resources, signing material, private CI artifacts, or a public Maven repository.
 
-## Prerequisites
+## What you can use publicly
 
-- JDK 17
-- Android SDK matching the sample compile SDK
-- an explicitly approved staging Maven repository containing `com.ldm:ldm-runtime-android:1.0.0-alpha1`
+You can inspect the samples to understand:
 
-The exact frozen SDK bundle has been inspected and is **not eligible for public export as-is** because its runtime AAR embeds private frozen model/PTE resources. If you do not have an approved private-staging Maven repository, the build is expected to stop before dependency resolution.
+- semantic state collection;
+- application-side range guards;
+- semantic candidate availability;
+- request construction through the LDM public boundary;
+- DECISION / ABSTAIN / ERROR routing;
+- explicit `APPLICATION_FALLBACK` provenance;
+- real application side effects owned by the app.
 
-## Task Priority sample
+The samples are intentionally separated from model/runtime internals.
 
-```bash
-cd samples/task-priority-android
-gradle -PldmSdkRepository=<approved-staging-maven-repository-uri> :app:assembleDebug
+## Build status
+
+These samples are **not standalone public builds**. The frozen SDK bundle cannot be published as-is because its runtime AAR embeds private frozen model/PTE resources.
+
+Without a separately authorized SDK repository, dependency resolution is expected to stop with:
+
+```text
+LDM SDK publication is pending redistribution clearance.
 ```
+
+That failure is intentional: the public source repository must not silently reach into private distribution infrastructure.
+
+## Optional authorized build path
+
+For maintainers or environments that already have separately authorized access to an approved SDK Maven repository, the existing Gradle shells accept either:
+
+```text
+-PldmSdkRepository=<approved-maven-repository-uri>
+```
+
+or:
+
+```text
+LDM_SDK_REPOSITORY=<approved-maven-repository-uri>
+```
+
+No private repository path or private GitHub Release URL is embedded in the sample configuration.
+
+### Task Priority sample
 
 Configuration:
 
@@ -25,8 +54,6 @@ Configuration:
 - Java 17
 - Room 2.6.1
 
-The sample is a local Task Inbox. It collects semantic task state, rejects known out-of-range state before runtime invocation, supplies semantic candidate availability, calls the LDM public adapter, and keeps LDM decisions separate from `APPLICATION_FALLBACK`.
-
 Canonical candidates:
 
 `critical`, `high`, `low`, `medium`
@@ -35,12 +62,9 @@ Application fallback:
 
 `medium`
 
-## Notification Timing sample
+The sample is a local Task Inbox. It collects semantic task state, rejects known out-of-range state before runtime invocation, supplies semantic candidate availability, calls the public LDM boundary, and keeps LDM decisions separate from `APPLICATION_FALLBACK`.
 
-```bash
-cd samples/notification-timing-android
-gradle -PldmSdkRepository=<approved-staging-maven-repository-uri> :app:assembleDebug
-```
+### Notification Timing sample
 
 Configuration:
 
@@ -65,36 +89,12 @@ Application actions demonstrated by the sample:
 
 The sample does not promise exact wall-clock delivery for the delayed path.
 
-## Repository URI input
-
-Both sample projects accept the SDK repository through either:
-
-```text
--PldmSdkRepository=<uri>
-```
-
-or environment variable:
-
-```text
-LDM_SDK_REPOSITORY=<uri>
-```
-
-No default private repository path or private GitHub Release URL is embedded in the staging build configuration.
-
-## Expected staging failure without an SDK repository
-
-Until a separately approved SDK distribution path exists, this is intentional:
-
-```text
-LDM SDK publication is pending redistribution clearance.
-```
-
-That failure demonstrates that the public-staging sample cannot silently reach into private distribution infrastructure.
-
 ## Contract guidance
 
 Read:
 
 - `public-contract.md` for semantic fields, candidate IDs, and ownership boundaries;
 - `integration-guide.md` for the public API integration pattern;
-- `distribution.md` for the exact frozen SDK inspection result and current binary publication block.
+- `distribution.md` for the exact frozen SDK inspection result and the binary-publication boundary.
+
+A future public SDK distribution, if created, will be a separate artifact with separate licensing, notice, and verification evidence. Nothing in this source-only repository authorizes publication of the frozen private SDK bundle.
