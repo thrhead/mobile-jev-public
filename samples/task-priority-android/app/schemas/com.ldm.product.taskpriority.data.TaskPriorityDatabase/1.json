@@ -1,0 +1,68 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "d4c636ab2c1096bc5eaba49957ea096c",
+    "entities": [
+      {
+        "tableName": "tasks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `due_at` INTEGER, `importance` REAL NOT NULL, `dependency_count` INTEGER, `blocking_others` INTEGER NOT NULL, `estimated_duration_min` INTEGER, `business_impact` REAL NOT NULL, `safety_impact` REAL NOT NULL, `previous_delays` INTEGER NOT NULL, `required_resources_ready` INTEGER, `displayed_priority` TEXT NOT NULL, `priority_source` TEXT NOT NULL, `evaluated_at` INTEGER NOT NULL)",
+        "fields": [
+          {"fieldPath":"id","columnName":"id","affinity":"INTEGER","notNull":true},
+          {"fieldPath":"title","columnName":"title","affinity":"TEXT","notNull":true},
+          {"fieldPath":"createdAt","columnName":"created_at","affinity":"INTEGER","notNull":true},
+          {"fieldPath":"dueAt","columnName":"due_at","affinity":"INTEGER","notNull":false},
+          {"fieldPath":"importance","columnName":"importance","affinity":"REAL","notNull":true},
+          {"fieldPath":"dependencyCount","columnName":"dependency_count","affinity":"INTEGER","notNull":false},
+          {"fieldPath":"blockingOthers","columnName":"blocking_others","affinity":"INTEGER","notNull":true},
+          {"fieldPath":"estimatedDurationMin","columnName":"estimated_duration_min","affinity":"INTEGER","notNull":false},
+          {"fieldPath":"businessImpact","columnName":"business_impact","affinity":"REAL","notNull":true},
+          {"fieldPath":"safetyImpact","columnName":"safety_impact","affinity":"REAL","notNull":true},
+          {"fieldPath":"previousDelays","columnName":"previous_delays","affinity":"INTEGER","notNull":true},
+          {"fieldPath":"requiredResourcesReady","columnName":"required_resources_ready","affinity":"INTEGER","notNull":false},
+          {"fieldPath":"displayedPriority","columnName":"displayed_priority","affinity":"TEXT","notNull":true},
+          {"fieldPath":"prioritySource","columnName":"priority_source","affinity":"TEXT","notNull":true},
+          {"fieldPath":"evaluatedAt","columnName":"evaluated_at","affinity":"INTEGER","notNull":true}
+        ],
+        "primaryKey": {"autoGenerate":true,"columnNames":["id"]},
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "decision_traces",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `task_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `application_status` TEXT, `ldm_status` TEXT, `ldm_selected_candidate` TEXT, `ldm_confidence` REAL, `ldm_abstention_reason` TEXT, `ldm_error_code` TEXT, `displayed_priority` TEXT NOT NULL, `priority_source` TEXT NOT NULL, `semantic_state_json` TEXT NOT NULL, `availability_json` TEXT NOT NULL, `probabilities_json` TEXT, `runtime_identity_json` TEXT, `ldm_error_message` TEXT, `ldm_error_retryable` INTEGER, FOREIGN KEY(`task_id`) REFERENCES `tasks`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {"fieldPath":"id","columnName":"id","affinity":"INTEGER","notNull":true},
+          {"fieldPath":"taskId","columnName":"task_id","affinity":"INTEGER","notNull":true},
+          {"fieldPath":"timestamp","columnName":"timestamp","affinity":"INTEGER","notNull":true},
+          {"fieldPath":"applicationStatus","columnName":"application_status","affinity":"TEXT","notNull":false},
+          {"fieldPath":"ldmStatus","columnName":"ldm_status","affinity":"TEXT","notNull":false},
+          {"fieldPath":"ldmSelectedCandidate","columnName":"ldm_selected_candidate","affinity":"TEXT","notNull":false},
+          {"fieldPath":"ldmConfidence","columnName":"ldm_confidence","affinity":"REAL","notNull":false},
+          {"fieldPath":"ldmAbstentionReason","columnName":"ldm_abstention_reason","affinity":"TEXT","notNull":false},
+          {"fieldPath":"ldmErrorCode","columnName":"ldm_error_code","affinity":"TEXT","notNull":false},
+          {"fieldPath":"displayedPriority","columnName":"displayed_priority","affinity":"TEXT","notNull":true},
+          {"fieldPath":"prioritySource","columnName":"priority_source","affinity":"TEXT","notNull":true},
+          {"fieldPath":"semanticStateJson","columnName":"semantic_state_json","affinity":"TEXT","notNull":true},
+          {"fieldPath":"availabilityJson","columnName":"availability_json","affinity":"TEXT","notNull":true},
+          {"fieldPath":"probabilitiesJson","columnName":"probabilities_json","affinity":"TEXT","notNull":false},
+          {"fieldPath":"runtimeIdentityJson","columnName":"runtime_identity_json","affinity":"TEXT","notNull":false},
+          {"fieldPath":"ldmErrorMessage","columnName":"ldm_error_message","affinity":"TEXT","notNull":false},
+          {"fieldPath":"ldmErrorRetryable","columnName":"ldm_error_retryable","affinity":"INTEGER","notNull":false}
+        ],
+        "primaryKey": {"autoGenerate":true,"columnNames":["id"]},
+        "indices": [
+          {"name":"index_decision_traces_task_id","unique":false,"columnNames":["task_id"],"orders":[],"createSql":"CREATE INDEX IF NOT EXISTS `index_decision_traces_task_id` ON `${TABLE_NAME}` (`task_id`)"}
+        ],
+        "foreignKeys": [
+          {"table":"tasks","onDelete":"CASCADE","onUpdate":"NO ACTION","columns":["task_id"],"referencedColumns":["id"]}
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4c636ab2c1096bc5eaba49957ea096c')"
+    ]
+  }
+}

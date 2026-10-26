@@ -1,12 +1,33 @@
 {
-  "manifest_version": "1.0",
-  "purpose": "LDM sanitized public-staging export provenance",
+  "manifest_version": "1.6",
+  "purpose": "LDM sanitized public source/sample/docs export provenance",
   "authoritative_source_repository": "thrhead/mobile_jev",
   "source_sha": "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54",
   "history_imported": false,
   "private_assets_imported": false,
-  "visibility_target": "private_staging",
+  "visibility_target": "public_source_sample_docs",
+  "public_source_surface_ready": true,
   "sdk_binary_publication_approved": false,
   "public_release_ready": false,
-  "frozen_contracts_modified": false
+  "frozen_contracts_modified": false,
+  "source_sample_license": "Apache-2.0",
+  "source_sample_license_scope": "LDM-authored public source, sample, and documentation content in this repository only; excludes authoritative private repository, model/PTE resources, SDK binaries, vendored third-party binaries, private evidence, and signing material",
+  "frozen_sdk_bundle_sha256": "08adf8ced4fab0de66ac39f6f6a90543569305954bedf40621bf21409e4d2d80",
+  "frozen_sdk_exact_binary_inspection": "PASS_IDENTITY_MATCHED",
+  "frozen_sdk_public_export_boundary": "BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED",
+  "gates": {
+    "PUBLIC_EXPORT_BOUNDARY": "APPROVED",
+    "PUBLIC_REPO_PRIVATE_ASSET_ABSENCE": "PASS_BOUNDED_TRACKED_TREE_SCOPE",
+    "PUBLIC_REPO_SECRET_SCAN": "PASS_BOUNDED_PATTERN_SCOPE",
+    "PUBLIC_REPO_HISTORY_CLEAN": "PASS_FRESH_ROOT_SCOPE",
+    "PUBLIC_REPO_CI_NO_PRIVATE_SECRET_DEPENDENCY": "PASS",
+    "PUBLIC_REPO_LICENSE_HYGIENE": "PASS_APACHE_2_0_OWNER_APPROVED_SCOPE",
+    "PUBLIC_SOURCE_ONLY_NOTICE_HYGIENE": "PASS_NO_THIRD_PARTY_BINARY_REDISTRIBUTION",
+    "PUBLIC_REPO_BUILD": "NOT_APPLICABLE_REFERENCE_SOURCE_ONLY_SURFACE",
+    "PUBLIC_SDK_BINARY_PUBLICATION": "BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED",
+    "PUBLIC_SDK_REDISTRIBUTION_RIGHTS": "NOT_ESTABLISHED",
+    "PUBLIC_SDK_THIRD_PARTY_NOTICE_COMPLIANCE": "NOT_ESTABLISHED_REPACK_REQUIRED",
+    "REQUIRED_BRANCH_PROTECTION": "NOT_ESTABLISHED"
+  },
+  "visibility_recommendation": "READY_FOR_PUBLIC_SOURCE_ONLY"
 }

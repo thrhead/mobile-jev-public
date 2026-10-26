@@ -1,23 +1,35 @@
 # Contributing
 
-This repository is currently a **private staging repository**, not an open contribution surface.
+This repository accepts changes only within the sanitized public **source/sample/documentation** boundary.
 
-All additions must respect the approved public export boundary.
+## Allowed contribution scope
+
+Contributions may target:
+
+- public-facing documentation;
+- sanitized application-side reference sample source;
+- public-safe build/configuration files that do not embed or acquire private artifacts;
+- secret-independent static CI and repository hygiene.
 
 ## Prohibited content
 
 Do not submit:
 
 - frozen model/PTE payloads;
+- SDK/runtime AARs, APKs, AABs, native `.so` libraries, or Maven binary repositories;
 - golden fixtures or private validation datasets;
 - internal STEP 12/13/14/15 evidence workflows or harnesses;
 - credentials, tokens, keystores, signing keys, signing passwords, or certificates;
 - historical private Actions artifacts/logs;
-- binaries copied from the private authoritative repository unless redistribution has been explicitly approved;
-- private repository history or tags.
+- private repository history or tags;
+- content copied from the authoritative private repository unless it is explicitly inside the approved export boundary.
 
-## Allowed contribution scope during staging
+## Reference samples are source-only
 
-Changes should be limited to reviewed public-facing documentation, sanitized sample application source, public-safe build configuration, and secret-independent CI.
+The Android samples intentionally do not include a public LDM SDK binary. A contribution must not make them silently download, embed, or point at private distribution infrastructure.
 
-Any uncertainty about whether a file belongs in the public surface should be treated as **review required**, not implicitly allowed.
+Any future public SDK packaging is a separate workstream and is not accepted through ordinary source-surface contributions unless its export/licensing/notice design has first been explicitly approved.
+
+## Review rule
+
+If there is uncertainty about whether a file belongs in the public surface, treat it as **review required**, not implicitly allowed.
