@@ -8,9 +8,9 @@ This guide is for application developers integrating through the LDM public API 
 - Android runtime coordinate: `com.ldm:ldm-runtime-android:1.0.0-alpha1`
 - Minimum Android API exercised by the sample configuration: API 26
 - Java toolchain: 17
-- Public SDK binary distribution: **not yet approved**
+- Public frozen SDK binary distribution: **blocked**
 
-The coordinate is documented for API compatibility, but this repository does not currently publish or provide a public Maven repository for the binary. See `distribution.md`.
+The exact frozen SDK bundle was inspected and its runtime AAR embeds private model/PTE resources. Therefore the current frozen bundle is not a public distributable artifact under the approved export boundary. See `distribution.md`.
 
 ## Application architecture
 
@@ -36,7 +36,7 @@ The application owns real side effects and fallback behavior. The runtime owns i
 
 ## Runtime setup
 
-The sanitized samples use the public runtime through `LdmRuntime` and `LdmPublicAdapter`:
+The sanitized samples exercise the public runtime through `LdmRuntime` and `LdmPublicAdapter` when an approved private-staging SDK repository is supplied:
 
 ```kotlin
 val runtime = LdmRuntime(context.applicationContext)
@@ -52,13 +52,15 @@ runtime.close()
 
 ## Build dependency
 
-After an approved public SDK distribution mechanism exists, the application dependency remains:
+The application dependency identity exercised by the samples is:
 
 ```kotlin
 dependencies {
     implementation("com.ldm:ldm-runtime-android:1.0.0-alpha1")
 }
 ```
+
+This coordinate documents compatibility identity; it is **not** a promise that the current frozen binary will be published publicly.
 
 During private staging, the sample settings require an explicitly supplied approved Maven repository URI:
 
