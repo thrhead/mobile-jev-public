@@ -8,7 +8,7 @@ This repository is the **private staging area** for a future sanitized public-fa
 - Production readiness: **not established**
 - Public release readiness: **not established**
 - SDK binary redistribution: **not yet approved**
-- LDM source/sample license: **pending owner decision**
+- LDM public source/sample license: **Apache-2.0**
 
 This repository was created with fresh Git history. It does **not** import the private authoritative repository history, frozen model/PTE bundles, golden fixtures, internal validation evidence, signing material, or historical release artifacts.
 
@@ -20,6 +20,12 @@ Two sanitized Android application samples are currently exported from the approv
 - `samples/notification-timing-android/` — notification timing sample demonstrating semantic availability and application-owned `delay`, `show_now`, and `silent` actions.
 
 The samples contain application-side source only. The private model/PTE bundle and internal validation infrastructure are not part of the export.
+
+## License scope
+
+LDM-authored source and sample code in this public-staging repository is licensed under the Apache License 2.0; see [`LICENSE`](LICENSE).
+
+This license decision does **not** by itself license or authorize publication of the authoritative private repository, frozen model/PTE resources, the private SDK ZIP/AARs, vendored third-party binaries, private validation evidence, or signing material. Those remain governed by the explicit export and redistribution gates.
 
 ## Documentation
 
