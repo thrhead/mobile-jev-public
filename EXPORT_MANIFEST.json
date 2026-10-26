@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.3",
+  "manifest_version": "1.4",
   "purpose": "LDM sanitized public-staging export provenance",
   "authoritative_source_repository": "thrhead/mobile_jev",
   "source_sha": "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54",
