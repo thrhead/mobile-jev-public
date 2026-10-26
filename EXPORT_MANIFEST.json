@@ -1,0 +1,12 @@
+{
+  "manifest_version": "1.0",
+  "purpose": "LDM sanitized public-staging export provenance",
+  "authoritative_source_repository": "thrhead/mobile_jev",
+  "source_sha": "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54",
+  "history_imported": false,
+  "private_assets_imported": false,
+  "visibility_target": "private_staging",
+  "sdk_binary_publication_approved": false,
+  "public_release_ready": false,
+  "frozen_contracts_modified": false
+}
