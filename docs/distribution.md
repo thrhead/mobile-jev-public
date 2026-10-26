@@ -20,25 +20,39 @@ The existing private immutable GitHub Release is an acquisition artifact for CI.
 
 ## What is established
 
+- LDM-authored public source/sample code in this staging repository is owner-approved for Apache-2.0 licensing.
 - Upstream ExecuTorch `v1.5.1` is distributed under BSD-3-Clause terms.
 - Those terms permit source and binary redistribution subject to preservation of the required copyright, conditions, and disclaimer notices.
 - Existing private LDM supply-chain checks establish the frozen SDK/bundle identity but do not verify third-party license/notice completeness.
 
-## What is not established
+## Exact-binary inspection status
 
-The exact immutable SDK bundle could not be inspected in this staging session because the historical Actions copy has expired and the available GitHub connector does not expose private Release asset bytes for local inspection.
+An archive supplied for inspection on 2026-10-26 failed the first identity gate:
+
+```text
+expected SDK bundle SHA256:
+08adf8ced4fab0de66ac39f6f6a90543569305954bedf40621bf21409e4d2d80
+
+supplied archive SHA256:
+df94a04823b1fe33f89fb323f5fd0f6c92db7d45f8b578af1efc11e8805bf4fc
+```
+
+The supplied archive is not the immutable SDK Maven bundle and contains no `.aar`, `.pte`, or nested `LDM_Android_SDK_MavenBundle_1.0.0-alpha1.zip` entry. It was therefore rejected as redistribution evidence and was not used to establish any SDK publication claim.
+
+The exact immutable SDK bundle still has not been inspected in this staging session because the historical Actions copy has expired and the available GitHub connector does not expose private Release asset bytes for local inspection.
+
+## What is not established
 
 Therefore this work does **not** establish:
 
 - whether the frozen LDM runtime AAR embeds frozen `.pte` model resources;
 - whether the vendored ExecuTorch AAR contains every third-party notice required by its packaged components;
-- whether the existing Maven bundle contains sufficient license/notice material for public binary redistribution;
-- an owner-selected license for LDM-authored public source/sample code.
+- whether the existing Maven bundle contains sufficient license/notice material for public binary redistribution.
 
 ## Current gate state
 
 ```text
-LDM_SOURCE_SAMPLE_LICENSE = PENDING_OWNER_DECISION
+LDM_SOURCE_SAMPLE_LICENSE = APACHE_2_0_APPROVED
 PUBLIC_SDK_REDISTRIBUTION_RIGHTS = NOT_ESTABLISHED
 THIRD_PARTY_NOTICE_COMPLIANCE = NOT_ESTABLISHED
 PUBLIC_SDK_BINARY_PUBLICATION = BLOCKED
@@ -46,4 +60,6 @@ PUBLIC_SDK_BINARY_PUBLICATION = BLOCKED
 
 ## Publication rule
 
-Do not publish the frozen SDK ZIP, runtime AAR, vendored ExecuTorch AAR, model/PTE resources, or a public Maven repository until both redistribution and notice gates are established from exact binary evidence and the LDM source/sample license has been explicitly selected.
+The Apache-2.0 license covers the LDM-authored public source/sample surface in this staging repository. It does not by itself authorize publication of the frozen SDK ZIP, runtime AAR, vendored ExecuTorch AAR, model/PTE resources, or a public Maven repository.
+
+Do not publish those binary artifacts until both redistribution and notice gates are established from the exact immutable SDK bundle and its contained artifacts.
