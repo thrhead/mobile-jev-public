@@ -1,6 +1,6 @@
 # Distribution Status
 
-This repository is private staging for a future public LDM surface. Nothing in this document authorizes public publication of the LDM SDK binary.
+This repository is private staging for a future public LDM surface. Nothing in this document authorizes public publication of the frozen LDM SDK binary.
 
 ## Evidence scope
 
@@ -21,40 +21,32 @@ The existing private immutable GitHub Release is an acquisition artifact for CI.
 ## What is established
 
 - LDM-authored public source/sample code in this staging repository is owner-approved for Apache-2.0 licensing.
-- Upstream ExecuTorch `v1.5.1` is distributed under BSD-3-Clause terms.
-- Those terms permit source and binary redistribution subject to preservation of the required copyright, conditions, and disclaimer notices.
-- Existing private LDM supply-chain checks establish the frozen SDK/bundle identity but do not verify third-party license/notice completeness.
+- The exact immutable SDK bundle was inspected and its SHA256 matched the frozen identity above.
+- The exact runtime AAR and vendored ExecuTorch AAR matched their previously recorded SHA256 identities.
+- The runtime AAR embeds the frozen LDM model/PTE resources and frozen protocol lock as library assets.
+- Those embedded private model/PTE resources are outside the approved public export boundary.
+- The exact SDK ZIP, runtime AAR, vendored ExecuTorch AAR, and their nested `classes.jar` files contain no LICENSE, NOTICE, COPYING, or equivalent license-notice entry.
+- The runtime POM depends on the vendored ExecuTorch artifact, AndroidX Core KTX 1.13.1, and Kotlin stdlib 2.0.21.
+- The vendored ExecuTorch POM depends on fbjni 0.7.0 and NativeLoader 0.10.5.
+- Upstream ExecuTorch is BSD-3-Clause licensed; binary redistribution requires reproduction of the required copyright, conditions, and disclaimer in distribution documentation and/or other materials.
 
-## Exact-binary inspection status
+## Exact-binary publication result
 
-An archive supplied for inspection on 2026-10-26 failed the first identity gate:
+The frozen SDK bundle is **not an acceptable public distribution artifact as-is** for two independent reasons:
 
-```text
-expected SDK bundle SHA256:
-08adf8ced4fab0de66ac39f6f6a90543569305954bedf40621bf21409e4d2d80
+1. **Public export boundary:** the runtime AAR contains private frozen model/PTE assets that the approved export boundary keeps private.
+2. **Notice packaging:** the exact bundle/AARs do not themselves carry the required ExecuTorch BSD license/notice material, and complete notice compliance for a repaired public distribution has not yet been established.
 
-supplied archive SHA256:
-df94a04823b1fe33f89fb323f5fd0f6c92db7d45f8b578af1efc11e8805bf4fc
-```
-
-The supplied archive is not the immutable SDK Maven bundle and contains no `.aar`, `.pte`, or nested `LDM_Android_SDK_MavenBundle_1.0.0-alpha1.zip` entry. It was therefore rejected as redistribution evidence and was not used to establish any SDK publication claim.
-
-The exact immutable SDK bundle still has not been inspected in this staging session because the historical Actions copy has expired and the available GitHub connector does not expose private Release asset bytes for local inspection.
-
-## What is not established
-
-Therefore this work does **not** establish:
-
-- whether the frozen LDM runtime AAR embeds frozen `.pte` model resources;
-- whether the vendored ExecuTorch AAR contains every third-party notice required by its packaged components;
-- whether the existing Maven bundle contains sufficient license/notice material for public binary redistribution.
+This is not a runtime defect and does not reopen any frozen runtime/model/protocol gate. It is a public packaging/distribution boundary result only.
 
 ## Current gate state
 
 ```text
 LDM_SOURCE_SAMPLE_LICENSE = APACHE_2_0_APPROVED
+FROZEN_SDK_EXACT_BINARY_INSPECTION = PASS
+FROZEN_SDK_PUBLIC_EXPORT_BOUNDARY = BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED
 PUBLIC_SDK_REDISTRIBUTION_RIGHTS = NOT_ESTABLISHED
-THIRD_PARTY_NOTICE_COMPLIANCE = NOT_ESTABLISHED
+THIRD_PARTY_NOTICE_COMPLIANCE = NOT_ESTABLISHED_REPACK_REQUIRED
 PUBLIC_SDK_BINARY_PUBLICATION = BLOCKED
 ```
 
@@ -62,4 +54,4 @@ PUBLIC_SDK_BINARY_PUBLICATION = BLOCKED
 
 The Apache-2.0 license covers the LDM-authored public source/sample surface in this staging repository. It does not by itself authorize publication of the frozen SDK ZIP, runtime AAR, vendored ExecuTorch AAR, model/PTE resources, or a public Maven repository.
 
-Do not publish those binary artifacts until both redistribution and notice gates are established from the exact immutable SDK bundle and its contained artifacts.
+Do not publish the current frozen SDK bundle or its AARs. A future public binary distribution, if desired, must be separately designed so that private model/PTE resources remain outside the public export and complete third-party license/notice obligations are carried by the actual distributable artifact set.
