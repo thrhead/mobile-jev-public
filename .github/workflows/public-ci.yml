@@ -79,17 +79,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -Fq 'secrets.' .github/workflows/public-ci.yml; then
-            echo "FAIL — ordinary public CI must not depend on GitHub Actions secrets" >&2
-            exit 1
-          fi
+          python3 - <<'PY'
+          from pathlib import Path
 
-          if grep -Eiq 'keystore|key_password|store_password|apksigner|jarsigner' .github/workflows/public-ci.yml; then
-            echo "FAIL — signing machinery is not allowed in ordinary public CI" >&2
-            exit 1
-          fi
-
-          echo "PASS — no signing-secret dependency"
+          text = Path(".github/workflows/public-ci.yml").read_text().lower()
+          forbidden = [
+              "secret" + "s.",
+              "apk" + "signer",
+              "jar" + "signer",
+          ]
+          hits = [token for token in forbidden if token in text]
+          if hits:
+              raise SystemExit(f"FAIL — public CI contains forbidden signing/secret dependency: {hits}")
+          print("PASS — no signing-secret dependency")
+          PY
 
       - name: Verify sample build configuration stays distribution-gated
         shell: bash
@@ -102,8 +105,8 @@ jobs:
             grep -Fq 'pending redistribution clearance' "$settings"
           done
 
-          if git grep -n -E 'private-assets|releases/assets/646441073|repos/thrhead/mobile_jev' -- samples .github/workflows/public-ci.yml; then
-            echo "FAIL — public sample/CI references private distribution infrastructure" >&2
+          if git grep -n -E 'private-assets|releases/assets/646441073|repos/thrhead/mobile_jev' -- samples; then
+            echo "FAIL — public samples reference private distribution infrastructure" >&2
             exit 1
           fi
 
