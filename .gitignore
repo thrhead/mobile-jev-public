@@ -1,0 +1,38 @@
+# Android / Gradle
+.gradle/
+**/.gradle/
+**/build/
+local.properties
+
+# Local SDK / Maven repositories
+ldm-maven-repo/
+local-maven/
+*.aar
+*.aab
+*.apk
+
+# Signing / credentials
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+*.cer
+*.mobileprovision
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local artifacts / scratch
+artifacts/
+out/
+tmp/
+*.log
