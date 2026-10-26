@@ -1,0 +1,154 @@
+name: Public Staging CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-boundary:
+    name: Public export boundary
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Verify staging manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path("EXPORT_MANIFEST.json").read_text())
+          assert manifest["source_sha"] == "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54"
+          assert manifest["history_imported"] is False
+          assert manifest["private_assets_imported"] is False
+          assert manifest["visibility_target"] == "private_staging"
+          assert manifest["sdk_binary_publication_approved"] is False
+          assert manifest["public_release_ready"] is False
+          assert manifest["frozen_contracts_modified"] is False
+          print("PASS — staging manifest boundary")
+          PY
+
+      - name: Reject forbidden tracked paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          tracked="$(git ls-files)"
+
+          if printf '%s\n' "$tracked" | grep -E '(^|/)private-assets/|\.pte$|\.jks$|\.keystore$|\.p12$|\.pfx$|(^|/)google-services\.json$'; then
+            echo "FAIL — forbidden private/binary/credential path is tracked" >&2
+            exit 1
+          fi
+
+          echo "PASS — forbidden tracked paths absent"
+
+      - name: Reject frozen/private implementation tokens
+        shell: bash
+        run: |
+          set -euo pipefail
+          patterns=(
+            'E805_XNNPACK.pte'
+            'SEMANTIC_OOD_XNNPACK.pte'
+            'exp009_android_golden'
+            'EXP009_PROTOCOL_LOCK.json'
+            'LdmConformanceEncoding'
+            'conformanceEncode('
+            'LDM_TASK_PRIORITY_KEYSTORE'
+            'BEGIN PRIVATE KEY'
+          )
+
+          for pattern in "${patterns[@]}"; do
+            if git grep -n -F "$pattern" -- . ':!.github/workflows/public-ci.yml'; then
+              echo "FAIL — forbidden token found: $pattern" >&2
+              exit 1
+            fi
+          done
+
+          echo "PASS — frozen/private implementation tokens absent"
+
+      - name: Verify public CI has no signing-secret dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Fq 'secrets.' .github/workflows/public-ci.yml; then
+            echo "FAIL — ordinary public CI must not depend on GitHub Actions secrets" >&2
+            exit 1
+          fi
+
+          if grep -Eiq 'keystore|key_password|store_password|apksigner|jarsigner' .github/workflows/public-ci.yml; then
+            echo "FAIL — signing machinery is not allowed in ordinary public CI" >&2
+            exit 1
+          fi
+
+          echo "PASS — no signing-secret dependency"
+
+      - name: Verify sample build configuration stays distribution-gated
+        shell: bash
+        run: |
+          set -euo pipefail
+          for settings in \
+            samples/task-priority-android/settings.gradle.kts \
+            samples/notification-timing-android/settings.gradle.kts; do
+            grep -Fq 'LDM_SDK_REPOSITORY' "$settings"
+            grep -Fq 'pending redistribution clearance' "$settings"
+          done
+
+          if git grep -n -E 'private-assets|releases/assets/646441073|repos/thrhead/mobile_jev' -- samples .github/workflows/public-ci.yml; then
+            echo "FAIL — public sample/CI references private distribution infrastructure" >&2
+            exit 1
+          fi
+
+          echo "PASS — build configuration remains explicitly distribution-gated"
+
+  sdk-build:
+    name: Sample build when public SDK repository is approved
+    if: ${{ vars.LDM_PUBLIC_SDK_REPOSITORY != '' }}
+    needs: static-boundary
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Java 17
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '17'
+          check-latest: false
+
+      - name: Ensure Android SDK platforms
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-35" "platforms;android-36" "build-tools;35.0.0"
+
+      - name: Build Task Priority sample
+        shell: bash
+        env:
+          LDM_SDK_REPOSITORY: ${{ vars.LDM_PUBLIC_SDK_REPOSITORY }}
+        run: |
+          set -euo pipefail
+          cd samples/task-priority-android
+          gradle --no-daemon :app:assembleDebug
+
+      - name: Build Notification Timing sample
+        shell: bash
+        env:
+          LDM_SDK_REPOSITORY: ${{ vars.LDM_PUBLIC_SDK_REPOSITORY }}
+        run: |
+          set -euo pipefail
+          cd samples/notification-timing-android
+          gradle --no-daemon :app:assembleDebug
