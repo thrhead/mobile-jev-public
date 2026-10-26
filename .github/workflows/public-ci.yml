@@ -41,7 +41,7 @@ jobs:
           assert manifest["gates"]["PUBLIC_SOURCE_ONLY_NOTICE_HYGIENE"] == "PASS_NO_THIRD_PARTY_BINARY_REDISTRIBUTION"
           assert manifest["gates"]["PUBLIC_REPO_BUILD"] == "NOT_APPLICABLE_REFERENCE_SOURCE_ONLY_SURFACE"
           assert manifest["gates"]["PUBLIC_SDK_BINARY_PUBLICATION"] == "BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED"
-          assert manifest["visibility_recommendation"] == "READY_FOR_PUBLIC_SOURCE_ONLY_AFTER_GREEN_MERGE"
+          assert manifest["visibility_recommendation"] == "READY_FOR_PUBLIC_SOURCE_ONLY"
           print("PASS — source-only publication manifest boundary")
           PY
 
