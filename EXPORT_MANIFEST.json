@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.0",
+  "manifest_version": "1.1",
   "purpose": "LDM sanitized public-staging export provenance",
   "authoritative_source_repository": "thrhead/mobile_jev",
   "source_sha": "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54",
@@ -8,5 +8,19 @@
   "visibility_target": "private_staging",
   "sdk_binary_publication_approved": false,
   "public_release_ready": false,
-  "frozen_contracts_modified": false
+  "frozen_contracts_modified": false,
+  "audited_candidate_sha": "2e0544184b7c7c6dffda9b192fb7f11d2f50d820",
+  "audit_ci_run_id": 40294446063,
+  "gates": {
+    "PUBLIC_EXPORT_BOUNDARY": "APPROVED",
+    "PUBLIC_REPO_PRIVATE_ASSET_ABSENCE": "PASS_BOUNDED_TRACKED_TREE_SCOPE",
+    "PUBLIC_REPO_SECRET_SCAN": "PASS_BOUNDED_PATTERN_SCOPE",
+    "PUBLIC_REPO_HISTORY_CLEAN": "PASS_FRESH_ROOT_SCOPE",
+    "PUBLIC_REPO_CI_NO_PRIVATE_SECRET_DEPENDENCY": "PASS",
+    "PUBLIC_SDK_REDISTRIBUTION_RIGHTS": "NOT_ESTABLISHED",
+    "THIRD_PARTY_NOTICE_COMPLIANCE": "NOT_ESTABLISHED",
+    "PUBLIC_REPO_LICENSE_HYGIENE": "BLOCKED_PENDING_OWNER_LICENSE",
+    "PUBLIC_REPO_BUILD": "NOT_ESTABLISHED_SDK_BUILD_SKIPPED"
+  },
+  "visibility_recommendation": "BLOCKED"
 }
