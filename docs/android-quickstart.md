@@ -8,13 +8,13 @@ The Android samples in this repository contain sanitized application-side source
 - Android SDK matching the sample compile SDK
 - an explicitly approved staging Maven repository containing `com.ldm:ldm-runtime-android:1.0.0-alpha1`
 
-Public SDK binary distribution is not yet approved. If you do not have an approved staging Maven repository, the build is expected to stop before dependency resolution.
+The exact frozen SDK bundle has been inspected and is **not eligible for public export as-is** because its runtime AAR embeds private frozen model/PTE resources. If you do not have an approved private-staging Maven repository, the build is expected to stop before dependency resolution.
 
 ## Task Priority sample
 
 ```bash
 cd samples/task-priority-android
-gradle -PldmSdkRepository=<approved-maven-repository-uri> :app:assembleDebug
+gradle -PldmSdkRepository=<approved-staging-maven-repository-uri> :app:assembleDebug
 ```
 
 Configuration:
@@ -39,7 +39,7 @@ Application fallback:
 
 ```bash
 cd samples/notification-timing-android
-gradle -PldmSdkRepository=<approved-maven-repository-uri> :app:assembleDebug
+gradle -PldmSdkRepository=<approved-staging-maven-repository-uri> :app:assembleDebug
 ```
 
 Configuration:
@@ -83,7 +83,7 @@ No default private repository path or private GitHub Release URL is embedded in 
 
 ## Expected staging failure without an SDK repository
 
-Until the redistribution gate is closed, this is intentional:
+Until a separately approved SDK distribution path exists, this is intentional:
 
 ```text
 LDM SDK publication is pending redistribution clearance.
@@ -97,4 +97,4 @@ Read:
 
 - `public-contract.md` for semantic fields, candidate IDs, and ownership boundaries;
 - `integration-guide.md` for the public API integration pattern;
-- `distribution.md` for the current SDK publication block.
+- `distribution.md` for the exact frozen SDK inspection result and current binary publication block.
