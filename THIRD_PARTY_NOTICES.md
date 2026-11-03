@@ -1,6 +1,6 @@
 # Third-Party Notice Boundary
 
-This repository publishes LDM-authored **source, reference samples, and documentation only**. It does not redistribute the frozen LDM SDK binary, vendored ExecuTorch AAR, APK/AAB files, native `.so` libraries, Maven binary repositories, or model/PTE payloads.
+This repository publishes LDM-authored **source, reference samples, and documentation**. It does not currently redistribute the frozen LDM SDK binary, vendored ExecuTorch AAR, APK/AAB files, native `.so` libraries, Maven binary repositories, or model/PTE payloads.
 
 ## Source-only public surface
 
@@ -24,7 +24,7 @@ It contains the frozen LDM runtime AAR, the vendored ExecuTorch AAR, their POM f
 
 The runtime AAR also embeds private frozen model/PTE resources, so the frozen bundle is not eligible for public export under the approved boundary.
 
-## ExecuTorch and declared dependencies
+## ExecuTorch and declared dependencies — legacy frozen SDK
 
 The frozen SDK evidence identifies:
 
@@ -36,13 +36,37 @@ The frozen SDK evidence identifies:
 
 These entries document the frozen private SDK evidence. They do **not** mean those binaries are redistributed by this public source repository.
 
-## Future binary distribution
+## Legacy future-binary boundary
 
-A future public SDK distribution, if created, must separately establish the license/notice obligations for the exact artifact set actually shipped. For the current frozen bundle:
+The historical frozen-bundle state remains:
 
 ```text
 PUBLIC_SDK_BINARY_PUBLICATION = BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED
 PUBLIC_SDK_THIRD_PARTY_NOTICE_COMPLIANCE = NOT_ESTABLISHED_REPACK_REQUIRED
 ```
 
-Do not copy the frozen SDK ZIP/AARs into this repository. A future distributable must exclude private model/PTE resources and include the complete third-party notices required by its actual binaries and dependency graph.
+Do not copy the frozen SDK ZIP/AARs into this repository.
+
+## Model-free public SDK candidate dependency families
+
+A separate model-free public SDK candidate has now been prepared. Its permitted release-graph dependency families are:
+
+- `org.pytorch:executorch-android` — ExecuTorch — BSD 3-Clause basis.
+- `com.facebook.fbjni` — fbjni — Apache License 2.0.
+- `com.facebook.soloader` — SoLoader / NativeLoader — Apache License 2.0.
+- `com.google.guava` — Guava / ListenableFuture — Apache License 2.0.
+- `AndroidX` (`androidx.*`) — Apache License 2.0.
+- `kotlinx.coroutines` (`org.jetbrains.kotlinx:kotlinx-coroutines-*`) — Apache License 2.0.
+- `Kotlin` (`org.jetbrains.kotlin:*`) — Apache License 2.0.
+- `JetBrains annotations` (`org.jetbrains:annotations`) — Apache License 2.0.
+
+No third-party binary is vendored into the model-free LDM public runtime AAR. ExecuTorch and its transitive dependencies are intended to resolve from public repositories in the eventual published distribution.
+
+Current model-free candidate state:
+
+```text
+MAVEN_CENTRAL_PUBLICATION = NOT_PERFORMED
+GITHUB_RELEASE_PUBLICATION = NOT_PERFORMED
+```
+
+Exact final release-graph and artifact checksums remain publication-stage evidence. C1-B1 documents dependency-family coverage but does not activate or authorize publication.

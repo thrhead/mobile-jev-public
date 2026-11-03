@@ -1,17 +1,17 @@
 # LDM Android Integration Guide
 
-This guide is for application developers reading the LDM public API integration surface. It intentionally excludes model/PTE access, runtime-internal encoding, conformance APIs, private validation infrastructure, signing/release evidence, and public SDK binary distribution.
+This guide is for application developers reading the LDM public API integration surface. It intentionally excludes model/PTE access, runtime-internal encoding, conformance APIs, private validation infrastructure, signing/release evidence, and any assumption that an unpublished SDK binary is already available.
 
 ## Current public repository scope
 
 - Public contract: `1.0`
 - Android runtime coordinate exercised by the reference samples: `com.ldm:ldm-runtime-android:1.0.0-alpha1`
+- Planned public Maven runtime coordinate: `io.github.thrhead:ldm-runtime-android:2.0.0-alpha1`
 - Minimum Android API exercised by the sample configuration: API 26
 - Java toolchain: 17
-- Repository publication model: **source + reference samples + documentation only**
-- Public SDK binary distribution: **not provided by this repository**
+- Repository publication model: **source + reference samples + documentation**, plus a verified SDK pre-publication candidate
 
-The coordinate is documented for API compatibility and source readability. This repository does not publish or provide a public Maven repository for the binary. See `distribution.md`.
+The planned public Maven coordinate is **not yet publicly resolvable**. C1-B1 does not activate it in the samples.
 
 ## Application architecture
 
@@ -51,11 +51,11 @@ Close the runtime when the owning component is destroyed:
 runtime.close()
 ```
 
-These snippets document the integration contract. They do not imply that the runtime binary is publicly distributed from this repository.
+These snippets document the integration contract. They do not imply that the new model-free runtime binary is already publicly distributed.
 
-## Dependency coordinate
+## Current dependency coordinate
 
-The reference samples declare:
+The reference samples currently declare:
 
 ```kotlin
 dependencies {
@@ -75,7 +75,19 @@ or:
 LDM_SDK_REPOSITORY=<uri>
 ```
 
-The configuration fails intentionally when neither is supplied. This prevents the public source repository from silently depending on the authoritative private repository or private Release assets.
+The configuration fails intentionally when neither is supplied. This prevents the public source repository from silently depending on private distribution infrastructure before C1-B2.
+
+## Planned public dependency after activation
+
+After Maven Central publication is independently verified, C1-B2 will migrate the samples to:
+
+```kotlin
+dependencies {
+    implementation("io.github.thrhead:ldm-runtime-android:2.0.0-alpha1")
+}
+```
+
+Until then, that coordinate documents the verified candidate identity only.
 
 ## Request construction
 

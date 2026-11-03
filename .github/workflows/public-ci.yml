@@ -28,6 +28,7 @@ jobs:
           from pathlib import Path
 
           manifest = json.loads(Path("EXPORT_MANIFEST.json").read_text())
+          assert manifest["purpose"] == "LDM sanitized public source/sample/docs export provenance"
           assert manifest["source_sha"] == "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54"
           assert manifest["history_imported"] is False
           assert manifest["private_assets_imported"] is False
@@ -43,6 +44,88 @@ jobs:
           assert manifest["gates"]["PUBLIC_SDK_BINARY_PUBLICATION"] == "BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED"
           assert manifest["visibility_recommendation"] == "READY_FOR_PUBLIC_SOURCE_ONLY"
           print("PASS — source-only publication manifest boundary")
+          PY
+
+      - name: Verify SDK pre-publication manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path("SDK_RELEASE_MANIFEST_2.0.0-alpha1.json").read_text())
+          export_manifest = json.loads(Path("EXPORT_MANIFEST.json").read_text())
+
+          assert manifest["schema_version"] == 1
+          assert manifest["stage"] == "PRE_PUBLICATION"
+          assert manifest["version"] == "2.0.0-alpha1"
+          assert manifest["runtime_coordinate"] == "io.github.thrhead:ldm-runtime-android:2.0.0-alpha1"
+          assert manifest["testkit_coordinate"] == "io.github.thrhead:ldm-runtime-testkit-android:2.0.0-alpha1"
+          assert manifest["authoritative_private_source_sha"] == "253b8a6ac2425928d649126dfe997d7cb7b31ea8"
+          assert manifest["publication_approved"] is False
+          assert manifest["maven_central_publication"] == "NOT_PERFORMED"
+          assert manifest["github_release_publication"] == "NOT_PERFORMED"
+          assert manifest["private_model_pack_included"] is False
+          assert manifest["frozen_contracts_modified"] is False
+
+          assert export_manifest["purpose"] == "LDM sanitized public source/sample/docs export provenance"
+          assert export_manifest["source_sha"] == "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54"
+          assert export_manifest["sdk_binary_publication_approved"] is False
+          print("PASS — SDK pre-publication manifest boundary")
+          PY
+
+      - name: Verify SDK pre-publication documentation state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          runtime = "io.github.thrhead:ldm-runtime-android:2.0.0-alpha1"
+          testkit = "io.github.thrhead:ldm-runtime-testkit-android:2.0.0-alpha1"
+          legacy = "com.ldm:ldm-runtime-android:1.0.0-alpha1"
+          good_sha = "3bbb9cc6abc74c632702ac74f7dbce1c3218d4601ff61f11284a565250ad2ad2"
+          bad_sha = "3bbb9cc6abc74c632702ac74f7dbce1c3218d4601ff61f11284a565250ad2ad26"
+
+          readme = Path("README.md").read_text()
+          distribution = Path("docs/distribution.md").read_text()
+          guide = Path("docs/integration-guide.md").read_text()
+          quickstart = Path("docs/android-quickstart.md").read_text()
+          notices = Path("THIRD_PARTY_NOTICES.md").read_text()
+
+          assert runtime in readme
+          assert "MAVEN_CENTRAL_PUBLICATION = NOT_PERFORMED" in readme
+          assert "Production readiness: **not established**" in readme
+
+          assert legacy in distribution
+          assert runtime in distribution
+          assert testkit in distribution
+          assert good_sha in distribution
+          assert bad_sha not in distribution
+          assert "MAVEN_CENTRAL_PUBLICATION = NOT_PERFORMED" in distribution
+          assert "GITHUB_RELEASE_PUBLICATION = NOT_PERFORMED" in distribution
+
+          assert legacy in guide
+          assert runtime in guide
+          assert "not yet publicly resolvable" in guide
+
+          assert "PUBLIC SDK CANDIDATE = PREPARED" in quickstart
+          assert "PUBLIC DISTRIBUTION = NOT YET ACTIVATED" in quickstart
+
+          for token in [
+              "org.pytorch:executorch-android",
+              "com.facebook.fbjni",
+              "com.facebook.soloader",
+              "com.google.guava",
+              "AndroidX",
+              "kotlinx.coroutines",
+              "Kotlin",
+              "JetBrains annotations",
+          ]:
+              assert token in notices
+          assert "PUBLIC_SOURCE_ONLY_NOTICE_HYGIENE = PASS_NO_THIRD_PARTY_BINARY_REDISTRIBUTION" in notices
+          print("PASS — SDK pre-publication documentation state")
           PY
 
       - name: Verify Apache-2.0 public source license
@@ -162,6 +245,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          public_runtime='io.github.thrhead:ldm-runtime-android:2.0.0-alpha1'
+
           for settings in \
             samples/task-priority-android/settings.gradle.kts \
             samples/notification-timing-android/settings.gradle.kts; do
@@ -169,9 +254,18 @@ jobs:
             grep -Fq 'pending redistribution clearance' "$settings"
           done
 
+          for app_gradle in \
+            samples/task-priority-android/app/build.gradle.kts \
+            samples/notification-timing-android/app/build.gradle.kts; do
+            if grep -Fq "$public_runtime" "$app_gradle"; then
+              echo "FAIL — C1-B2 public runtime activation appeared during C1-B1: $app_gradle" >&2
+              exit 1
+            fi
+          done
+
           if git grep -n -E 'private-assets|releases/assets/646441073|repos/thrhead/mobile_jev' -- samples; then
             echo "FAIL — public reference samples point at private distribution infrastructure" >&2
             exit 1
           fi
 
-          echo "PASS — reference samples remain source-only and distribution-gated"
+          echo "PASS — reference samples remain legacy/gated until C1-B2"

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "stage": "PRE_PUBLICATION",
+  "version": "2.0.0-alpha1",
+  "runtime_coordinate": "io.github.thrhead:ldm-runtime-android:2.0.0-alpha1",
+  "testkit_coordinate": "io.github.thrhead:ldm-runtime-testkit-android:2.0.0-alpha1",
+  "authoritative_private_source_sha": "253b8a6ac2425928d649126dfe997d7cb7b31ea8",
+  "publication_approved": false,
+  "maven_central_publication": "NOT_PERFORMED",
+  "github_release_publication": "NOT_PERFORMED",
+  "private_model_pack_included": false,
+  "frozen_contracts_modified": false
+}
