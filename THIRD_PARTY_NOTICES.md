@@ -1,20 +1,55 @@
-# Third-Party Notices
+# Third-Party Notice Boundary
 
-This file preserves the source-only notice boundary and documents the dependency families permitted for the model-free Android SDK pre-publication candidate.
+This repository publishes LDM-authored **source, reference samples, and documentation**. It does not currently redistribute the frozen LDM SDK binary, vendored ExecuTorch AAR, APK/AAB files, native `.so` libraries, Maven binary repositories, or model/PTE payloads.
 
 ## Source-only public surface
 
-For the current repository source/sample/docs surface, third-party binary artifacts are not copied into this repository.
+For the current repository scope:
+
+- LDM-authored source/sample/documentation content is licensed under Apache-2.0;
+- third-party dependencies may be named by build metadata or imported by source code, but their binary artifacts are not copied into or redistributed by this repository;
+- the current public source surface therefore does not claim to provide a complete binary third-party notice bundle.
+
+Current source-only gate:
 
 ```text
 PUBLIC_SOURCE_ONLY_NOTICE_HYGIENE = PASS_NO_THIRD_PARTY_BINARY_REDISTRIBUTION
 ```
 
-The legacy frozen SDK bundle is not redistributed here.
+## Frozen SDK inspection record
+
+The exact frozen SDK bundle with SHA256 `08adf8ced4fab0de66ac39f6f6a90543569305954bedf40621bf21409e4d2d80` was inspected.
+
+It contains the frozen LDM runtime AAR, the vendored ExecuTorch AAR, their POM files, a README, and checksums. No LICENSE, NOTICE, COPYING, or equivalent license-notice file is present in the outer ZIP, either AAR, or their nested `classes.jar` files.
+
+The runtime AAR also embeds private frozen model/PTE resources, so the frozen bundle is not eligible for public export under the approved boundary.
+
+## ExecuTorch and declared dependencies — legacy frozen SDK
+
+The frozen SDK evidence identifies:
+
+- `com.ldm.vendor:executorch-android:1.5.1-ldm1` — upstream ExecuTorch, BSD-3-Clause basis;
+- `com.facebook.fbjni:fbjni:0.7.0` — declared by the vendored ExecuTorch POM;
+- `com.facebook.soloader:nativeloader:0.10.5` — declared by the vendored ExecuTorch POM;
+- `androidx.core:core-ktx:1.13.1` — declared by the runtime POM;
+- `org.jetbrains.kotlin:kotlin-stdlib:2.0.21` — declared by the runtime POM.
+
+These entries document the frozen private SDK evidence. They do **not** mean those binaries are redistributed by this public source repository.
+
+## Legacy future-binary boundary
+
+The historical frozen-bundle state remains:
+
+```text
+PUBLIC_SDK_BINARY_PUBLICATION = BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED
+PUBLIC_SDK_THIRD_PARTY_NOTICE_COMPLIANCE = NOT_ESTABLISHED_REPACK_REQUIRED
+```
+
+Do not copy the frozen SDK ZIP/AARs into this repository.
 
 ## Model-free public SDK candidate dependency families
 
-The verified public release graph permits these dependency families:
+A separate model-free public SDK candidate has now been prepared. Its permitted release-graph dependency families are:
 
 - `org.pytorch:executorch-android` — ExecuTorch — BSD 3-Clause basis.
 - `com.facebook.fbjni` — fbjni — Apache License 2.0.
@@ -27,13 +62,11 @@ The verified public release graph permits these dependency families:
 
 No third-party binary is vendored into the model-free LDM public runtime AAR. ExecuTorch and its transitive dependencies are intended to resolve from public repositories in the eventual published distribution.
 
-## Pre-publication state
-
-This notice inventory documents the permitted dependency families for the prepared candidate. It does not mean the candidate is already published.
+Current model-free candidate state:
 
 ```text
 MAVEN_CENTRAL_PUBLICATION = NOT_PERFORMED
 GITHUB_RELEASE_PUBLICATION = NOT_PERFORMED
 ```
 
-Exact final release-graph and artifact checksums remain publication-stage evidence and are not asserted by this source repository before publication.
+Exact final release-graph and artifact checksums remain publication-stage evidence. C1-B1 documents dependency-family coverage but does not activate or authorize publication.
