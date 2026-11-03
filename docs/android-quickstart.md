@@ -1,6 +1,21 @@
 # Android Reference Samples
 
-The Android samples in this repository are sanitized **application-side reference integrations**. They do **not** bundle or publish the private LDM SDK, frozen model/PTE resources, signing material, private CI artifacts, or a public Maven repository.
+The Android samples in this repository are sanitized **application-side reference integrations**. They do not bundle or publish the private LDM SDK, frozen model/PTE resources, signing material, private CI artifacts, or a public Maven repository.
+
+Current C1-B1 state:
+
+```text
+PUBLIC SDK CANDIDATE = PREPARED
+PUBLIC DISTRIBUTION = NOT YET ACTIVATED
+```
+
+The prepared public candidate identity is:
+
+```text
+io.github.thrhead:ldm-runtime-android:2.0.0-alpha1
+```
+
+It is not yet claimed to be publicly resolvable from Maven Central.
 
 ## What you can use publicly
 
@@ -14,11 +29,9 @@ You can inspect the samples to understand:
 - explicit `APPLICATION_FALLBACK` provenance;
 - real application side effects owned by the app.
 
-The samples are intentionally separated from model/runtime internals.
+## Build status before Maven activation
 
-## Build status
-
-These samples are **not standalone public builds**. The frozen SDK bundle cannot be published as-is because its runtime AAR embeds private frozen model/PTE resources.
+The reference samples intentionally remain on the existing legacy/gated dependency path during C1-B1.
 
 Without a separately authorized SDK repository, dependency resolution is expected to stop with:
 
@@ -26,11 +39,11 @@ Without a separately authorized SDK repository, dependency resolution is expecte
 LDM SDK publication is pending redistribution clearance.
 ```
 
-That failure is intentional: the public source repository must not silently reach into private distribution infrastructure.
+That failure remains intentional until C1-B2.
 
-## Optional authorized build path
+## Optional authorized staging build path
 
-For maintainers or environments that already have separately authorized access to an approved SDK Maven repository, the existing Gradle shells accept either:
+For maintainers or environments that already have separately authorized access to an approved SDK Maven repository, the Gradle shells continue to accept either:
 
 ```text
 -PldmSdkRepository=<approved-maven-repository-uri>
@@ -54,15 +67,9 @@ Configuration:
 - Java 17
 - Room 2.6.1
 
-Canonical candidates:
+Canonical candidates: `critical`, `high`, `low`, `medium`
 
-`critical`, `high`, `low`, `medium`
-
-Application fallback:
-
-`medium`
-
-The sample is a local Task Inbox. It collects semantic task state, rejects known out-of-range state before runtime invocation, supplies semantic candidate availability, calls the public LDM boundary, and keeps LDM decisions separate from `APPLICATION_FALLBACK`.
+Application fallback: `medium`
 
 ### Notification Timing sample
 
@@ -73,28 +80,20 @@ Configuration:
 - minSdk 26
 - Java 17
 
-Canonical candidates:
+Canonical candidates: `delay`, `show_now`, `silent`
 
-`delay`, `show_now`, `silent`
+Application fallback: `silent`
 
-Application fallback:
+The delayed path does not promise exact wall-clock delivery.
 
-`silent`
+## C1-B2 activation
 
-Application actions demonstrated by the sample:
+Only after the model-free runtime is independently verified as publicly resolvable from Maven Central will the samples switch to:
 
-- `show_now` — post a notification when Android permission/settings permit it;
-- `delay` — schedule an application broadcast using an inexact idle-aware alarm;
-- `silent` — do not post an interruptive notification.
+```text
+io.github.thrhead:ldm-runtime-android:2.0.0-alpha1
+```
 
-The sample does not promise exact wall-clock delivery for the delayed path.
+At that point the custom staging-repository gate can be removed and real public sample-build CI can be enabled.
 
-## Contract guidance
-
-Read:
-
-- `public-contract.md` for semantic fields, candidate IDs, and ownership boundaries;
-- `integration-guide.md` for the public API integration pattern;
-- `distribution.md` for the exact frozen SDK inspection result and the binary-publication boundary.
-
-A future public SDK distribution, if created, will be a separate artifact with separate licensing, notice, and verification evidence. Nothing in this source-only repository authorizes publication of the frozen private SDK bundle.
+Nothing in this pre-publication repository state authorizes publication of the legacy frozen SDK bundle or private model assets.
