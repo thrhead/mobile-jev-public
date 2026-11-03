@@ -245,6 +245,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          public_runtime='io.github.thrhead:ldm-runtime-android:2.0.0-alpha1'
+
           for settings in \
             samples/task-priority-android/settings.gradle.kts \
             samples/notification-timing-android/settings.gradle.kts; do
@@ -252,9 +254,18 @@ jobs:
             grep -Fq 'pending redistribution clearance' "$settings"
           done
 
+          for app_gradle in \
+            samples/task-priority-android/app/build.gradle.kts \
+            samples/notification-timing-android/app/build.gradle.kts; do
+            if grep -Fq "$public_runtime" "$app_gradle"; then
+              echo "FAIL — C1-B2 public runtime activation appeared during C1-B1: $app_gradle" >&2
+              exit 1
+            fi
+          done
+
           if git grep -n -E 'private-assets|releases/assets/646441073|repos/thrhead/mobile_jev' -- samples; then
             echo "FAIL — public reference samples point at private distribution infrastructure" >&2
             exit 1
           fi
 
-          echo "PASS — reference samples remain source-only and distribution-gated"
+          echo "PASS — reference samples remain legacy/gated until C1-B2"
