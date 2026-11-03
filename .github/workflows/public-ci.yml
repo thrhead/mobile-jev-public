@@ -75,6 +75,59 @@ jobs:
           print("PASS — SDK pre-publication manifest boundary")
           PY
 
+      - name: Verify SDK pre-publication documentation state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          runtime = "io.github.thrhead:ldm-runtime-android:2.0.0-alpha1"
+          testkit = "io.github.thrhead:ldm-runtime-testkit-android:2.0.0-alpha1"
+          legacy = "com.ldm:ldm-runtime-android:1.0.0-alpha1"
+          good_sha = "3bbb9cc6abc74c632702ac74f7dbce1c3218d4601ff61f11284a565250ad2ad2"
+          bad_sha = "3bbb9cc6abc74c632702ac74f7dbce1c3218d4601ff61f11284a565250ad2ad26"
+
+          readme = Path("README.md").read_text()
+          distribution = Path("docs/distribution.md").read_text()
+          guide = Path("docs/integration-guide.md").read_text()
+          quickstart = Path("docs/android-quickstart.md").read_text()
+          notices = Path("THIRD_PARTY_NOTICES.md").read_text()
+
+          assert runtime in readme
+          assert "MAVEN_CENTRAL_PUBLICATION = NOT_PERFORMED" in readme
+          assert "Production readiness: **not established**" in readme
+
+          assert legacy in distribution
+          assert runtime in distribution
+          assert testkit in distribution
+          assert good_sha in distribution
+          assert bad_sha not in distribution
+          assert "MAVEN_CENTRAL_PUBLICATION = NOT_PERFORMED" in distribution
+          assert "GITHUB_RELEASE_PUBLICATION = NOT_PERFORMED" in distribution
+
+          assert legacy in guide
+          assert runtime in guide
+          assert "not yet publicly resolvable" in guide
+
+          assert "PUBLIC SDK CANDIDATE = PREPARED" in quickstart
+          assert "PUBLIC DISTRIBUTION = NOT YET ACTIVATED" in quickstart
+
+          for token in [
+              "org.pytorch:executorch-android",
+              "com.facebook.fbjni",
+              "com.facebook.soloader",
+              "com.google.guava",
+              "AndroidX",
+              "kotlinx.coroutines",
+              "Kotlin",
+              "JetBrains annotations",
+          ]:
+              assert token in notices
+          assert "PUBLIC_SOURCE_ONLY_NOTICE_HYGIENE = PASS_NO_THIRD_PARTY_BINARY_REDISTRIBUTION" in notices
+          print("PASS — SDK pre-publication documentation state")
+          PY
+
       - name: Verify Apache-2.0 public source license
         shell: bash
         run: |
