@@ -28,6 +28,7 @@ jobs:
           from pathlib import Path
 
           manifest = json.loads(Path("EXPORT_MANIFEST.json").read_text())
+          assert manifest["purpose"] == "LDM sanitized public source/sample/docs export provenance"
           assert manifest["source_sha"] == "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54"
           assert manifest["history_imported"] is False
           assert manifest["private_assets_imported"] is False
@@ -43,6 +44,35 @@ jobs:
           assert manifest["gates"]["PUBLIC_SDK_BINARY_PUBLICATION"] == "BLOCKED_PRIVATE_MODEL_PTE_EMBEDDED"
           assert manifest["visibility_recommendation"] == "READY_FOR_PUBLIC_SOURCE_ONLY"
           print("PASS — source-only publication manifest boundary")
+          PY
+
+      - name: Verify SDK pre-publication manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path("SDK_RELEASE_MANIFEST_2.0.0-alpha1.json").read_text())
+          export_manifest = json.loads(Path("EXPORT_MANIFEST.json").read_text())
+
+          assert manifest["schema_version"] == 1
+          assert manifest["stage"] == "PRE_PUBLICATION"
+          assert manifest["version"] == "2.0.0-alpha1"
+          assert manifest["runtime_coordinate"] == "io.github.thrhead:ldm-runtime-android:2.0.0-alpha1"
+          assert manifest["testkit_coordinate"] == "io.github.thrhead:ldm-runtime-testkit-android:2.0.0-alpha1"
+          assert manifest["authoritative_private_source_sha"] == "253b8a6ac2425928d649126dfe997d7cb7b31ea8"
+          assert manifest["publication_approved"] is False
+          assert manifest["maven_central_publication"] == "NOT_PERFORMED"
+          assert manifest["github_release_publication"] == "NOT_PERFORMED"
+          assert manifest["private_model_pack_included"] is False
+          assert manifest["frozen_contracts_modified"] is False
+
+          assert export_manifest["purpose"] == "LDM sanitized public source/sample/docs export provenance"
+          assert export_manifest["source_sha"] == "2cfa0ef54f8a951c93a0962b23767efc8cb3aa54"
+          assert export_manifest["sdk_binary_publication_approved"] is False
+          print("PASS — SDK pre-publication manifest boundary")
           PY
 
       - name: Verify Apache-2.0 public source license
